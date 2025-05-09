@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>MoviWeb</title>
+  </head>
+  <nav>
+    <div class="container">
+        <a href="/" class="logo">🎬 MovieApp</a>
+    </div>
+  </nav>
+  <body>
+    <main class="main">
+        {% if message %}
+          <div class="error-wrapper">
+              <div class="error">{{ message }}</div>
+          </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+  </body>
+  <footer>
+      <div class="container">
+          <p>© 2025 MovieApp. All rights reserved.</p>
+      </div>
+  </footer>
+</html>

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="list-movies-title">
+        <h1>{{user_name}}'s Movies</h1>
+    </div>
+    <div class="movie-grid-container">
+        <ol class="movie-grid">
+            {% for movie in movies %}
+            <li>
+                <div class ="movie">
+<!--                <img class ="movie-poster" src={{movie.poster_url}}-->
+<!--                    onclick="window.location.href={{url_for('update_movie', user_id=user_id, movie_id=movie.id)}};">-->
+                    <img
+                        class="movie-poster"
+                        src="{{ movie.poster_url }}"
+                        style="cursor:pointer;"
+                        onclick="window.location.href='{{ url_for('update_movie', user_id=user_id, movie_id=movie.id) }}';"
+                        alt="Poster for {{ movie.name }}"
+                    >
+                    <div class ="movie-title"> {{movie.name}} </div>
+                    <div class ="movie-year" > {{movie.year}} </div>
+                    <div class ="movie-year" > {{movie.director}} </div>
+                    <form class="movie-year" action="{{url_for('delete_movie', user_id=user_id, movie_id=movie.id)}}" method="POST">
+                        <input type="submit" value="Delete Movie">
+                    </form>
+
+                </div>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+
+    <div class="card">
+        <p>Add new movie</p>
+        <form action="{{url_for('create_movie', user_id=user_id)}}" method="POST">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required><br><br>
+
+            <input type="submit" value="Add Movie">
+        </form>
+    </div>
+
+{% endblock %}
