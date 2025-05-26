@@ -8,13 +8,9 @@
             {% for movie in movies %}
             <li>
                 <div class ="movie">
-<!--                <img class ="movie-poster" src={{movie.poster_url}}-->
-<!--                    onclick="window.location.href={{url_for('update_movie', user_id=user_id, movie_id=movie.id)}};">-->
                     <img
                         class="movie-poster"
                         src="{{ movie.poster_url }}"
-                        style="cursor:pointer;"
-                        onclick="window.location.href='{{ url_for('update_movie', user_id=user_id, movie_id=movie.id) }}';"
                         alt="Poster for {{ movie.name }}"
                     >
                     <div class ="movie-title"> {{movie.name}} </div>
@@ -22,6 +18,9 @@
                     <div class ="movie-year" > {{movie.director}} </div>
                     <form class="movie-year" action="{{url_for('delete_movie', user_id=user_id, movie_id=movie.id)}}" method="POST">
                         <input type="submit" value="Delete Movie">
+                    </form>
+                    <form class="movie-year" action="{{url_for('update_movie', user_id=user_id, movie_id=movie.id)}}" method="GET">
+                        <input type="submit" value="Update Movie">
                     </form>
 
                 </div>

@@ -34,24 +34,14 @@ class DataManager():
         self.db_commit()
 
 
-    def update_movie(self, movie_id, user_id):
+    def update_movie(self, movie_id, user_id, name, director, year):
         movie = Movie.query.filter_by(id=movie_id, user_id=user_id).first()
         if movie is None:
-            return f"No movie found with ID {movie_id}"
+            return f"No movie found with ID {movie_id} for userID {user_id}"
 
-        try:
-            response = requests.post(f"https://www.omdbapi.com/?apikey=9d3237b8&t={movie.name}")
-        except ConnectionError:
-            return "No connection to API!"
-
-        data = response.json()
-
-        if data.get("Response") == "False":
-            return f"Movie “{movie.name}” not found in OMDb"
-
-        movie.director = data.get("Director", movie.director)
-        movie.year = data.get("Year", movie.year)
-        movie.poster_url = data.get("Poster", movie.poster_url)
+        movie.name = name
+        movie.director = director
+        movie.year = year
 
         self.db_commit()
 

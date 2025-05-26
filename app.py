@@ -1,5 +1,5 @@
 import os
-from wsgiref.util import request_uri
+from pathlib import Path
 
 from flask import Flask, render_template, request, url_for, redirect
 from data_manager import DataManager
@@ -7,10 +7,11 @@ from models import db, User, Movie
 
 app = Flask(__name__)
 
-cwd = os.getcwd()
-db_file = os.path.join(cwd, "data", "library.sqlite")
-#app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_file}'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///movies.db'
+root_dir = Path(__file__).parent
+db_file = root_dir.joinpath("instance", "movies.db")
+
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///movies.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_file}'
 
 db.init_app(app)
 data_manager = DataManager()
@@ -62,15 +63,21 @@ def create_movie(user_id):
     else:
         return redirect(url_for('get_movies', user_id=user_id, message=message))
 
-#personal note: as it makes zero sense to have any kind of update functionality for movies
-#and there were no details given on what this method is actually supposed to achive I will
-#just add it for my grade's sake.
-#I didn't want to ruin the visual appeal of the app by adding an update button to each movie.
-#Especially when it's entirely useless. So instead I gave the img tag an onclick handler.
-#However, that limited me to use GET instead of POST.
-@app.route('/users/<int:user_id>/movies/<int:movie_id>/update', methods=['GET'])
+
+@app.route('/users/<int:user_id>/movies/<int:movie_id>/update', methods=['GET', 'POST'])
 def update_movie(user_id, movie_id):
-    message = data_manager.update_movie(movie_id, user_id)
+    if request.method == 'GET':
+        movie = Movie.query.filter_by(id=movie_id).one()
+        return render_template('update_movie.html',
+                               user_id=user_id,
+                               movie=movie), 200
+
+    name = request.form.get('name')
+    director = request.form.get('director')
+    year = request.form.get('year')
+
+    message = data_manager.update_movie(movie_id, user_id, name, director, year)
+
     if message is None:
         return redirect(url_for('get_movies', user_id=user_id))
     else:
